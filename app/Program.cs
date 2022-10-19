@@ -5,6 +5,8 @@ using BenchmarkDotNet.Running;
 [MemoryDiagnoser]
 public class SelectObjectComparison
 {
+    private readonly List<Animal> _data = Generate();
+
     public static List<Animal> Generate() //Will generate 2500 dogs, 10000 ducks and 5000 cats
     {
         var animals = new List<Animal>();
@@ -17,22 +19,19 @@ public class SelectObjectComparison
     }
 
     [Benchmark]
-    public List<Animal> SelectWithWhere() //Will retrieve only animals of type Duck from the list
+    public List<Duck> SelectWithWhere() //Will retrieve only ducks from the list
     {
-        var animals = Generate();
-
-        return animals.Where(a => a is Duck).ToList();
+         return _data.Where(a => a is Duck)
+                    .Select(a => (Duck)a).ToList();
     }
 
     [Benchmark]
     public List<Duck> SelectWithOfType() //Will retrieve only ducks from the list
     {
-        var animals = Generate();
-
-        return animals.OfType<Duck>().ToList();
+        return _data.OfType<Duck>().ToList();
     }
-    
-    
+
+
     // [MemoryDiagnoser]
     // public class SelectPrimitiveTypeComparison
     // {
